@@ -208,15 +208,16 @@ theorem klat_facts (hc : Crv D cc δ) {A : AddSubgroup (VC D N N')} (hA : KLat D
 end GlobalTheory.ConjNorm.Inter
 
 
-open GlobalTheory.ThetaInter GlobalTheory.ConjNorm.Inter in
+open GlobalTheory.ThetaInter hiding klat_finite
+open GlobalTheory.ConjNorm.Inter
 theorem GlobalTheory.ConjNorm.unitary_all : ∀ D : D7, IntertwinerUnitary D := by
   intro D cc δ hc N N' A₁ A₂ h₁ h₂ th hth
   obtain ⟨f₁, s₁, d₁, c₁⟩ := GlobalTheory.ConjNorm.Inter.klat_facts hc h₁
   obtain ⟨f₂, s₂, d₂, c₂⟩ := GlobalTheory.ConjNorm.Inter.klat_facts hc h₂
   have hH := GlobalTheory.ConjNorm.Inter.isHerm_sesqOf D (tor0 D cc δ) N N'
   have hψ := (GlobalTheory.InducedType.induced_type D).1.1
-  have := _root_.GlobalTheory.ConjNorm.Inter.klat_finite hψ hc.1.1 h₁ h₂ f₂
-  have := _root_.GlobalTheory.ConjNorm.Inter.klat_finite hψ hc.1.1 h₂ h₁ f₁
+  have := klat_finite hψ hc.1.1 h₁ h₂ f₂
+  have := klat_finite hψ hc.1.1 h₂ h₁ f₁
   have : (MeasureTheory.volume : MeasureTheory.Measure (Fin N' → Fin N → ℂ)).IsAddHaarMeasure :=
     MeasureTheory.Measure.pi.isAddHaarMeasure _
   have : (MeasureTheory.volume : MeasureTheory.Measure (VC D N N')).IsAddHaarMeasure :=
