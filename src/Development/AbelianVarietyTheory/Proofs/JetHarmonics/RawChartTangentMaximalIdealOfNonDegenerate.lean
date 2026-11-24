@@ -12,7 +12,8 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FormalGroupCo
 @[expose] public section
 
 open scoped BigOperators TensorProduct
-open Classical NumberField IsDedekindDomain Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.L2.Pj Formalism.L2.DIV Formalism.BasicNotions GlobalTheory.RowLaw GlobalTheory.RowAt GlobalTheory.GoodDepth
+open Classical NumberField IsDedekindDomain Formalism.IncomingBounds Formalism.L2.Pj Formalism.L2.DIV Formalism.BasicNotions GlobalTheory.RowLaw GlobalTheory.RowAt GlobalTheory.GoodDepth
+open Formalism.L2.FormalSeriesBounds hiding mm_zero mm_add
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 
 noncomputable section
@@ -24,7 +25,7 @@ open GlobalTheory.RowLaw.CvEnd GlobalTheory.PlaceProj
 variable {C : Type} [Field C] {V : VF C}
 
 theorem mm_sum' {ι : Type} (s : Finset ι) (f : ι → C) (h : ∀ i ∈ s, V.MM (f i)) : V.MM (∑ i ∈ s, f i) :=
-  Finset.sum_induction f V.MM (fun _ _ => GlobalTheory.PlaceProj.mm_add) GlobalTheory.PlaceProj.mm_zero h
+  Finset.sum_induction f V.MM (fun _ _ => mm_add) mm_zero h
 
 def ordIdeal (C : Type) [Field C] {τ : Type} (w : τ → ℕ) (n : ℕ) : Ideal (MvPowerSeries τ C) where
   carrier := {F | F ∈ ordGe C w n}
@@ -57,7 +58,7 @@ theorem mm_subst {σ τ : Type} {a : σ → MvPowerSeries τ C} (ha : MvPowerSer
     {F : MvPowerSeries σ C} (hF : ∀ μ, V.MM (MvPowerSeries.coeff μ F)) (e : τ →₀ ℕ) :
     V.MM (MvPowerSeries.coeff e (MvPowerSeries.subst a F)) := by
   rw [MvPowerSeries.coeff_subst ha]
-  refine finsum_induction (fun x => V.MM x) GlobalTheory.PlaceProj.mm_zero (fun _ _ => GlobalTheory.PlaceProj.mm_add) fun μ => ?_
+  refine finsum_induction (fun x => V.MM x) mm_zero (fun _ _ => mm_add) fun μ => ?_
   rw [smul_eq_mul, mul_comm]
   refine mm_mul ?_ (hF μ)
   revert e
@@ -128,7 +129,7 @@ theorem cob_root (H : RLaw Y V) {c : MvPowerSeries (Fin 2 × κ) C} (hc : IntS V
   refine hroot _ _ hc (intS_sub' (intS_add' hB hD) hA) fun μ => ?_
   have k1 := (hfr _ _ (intS_add' hB hD) hA μ).2
   have k2 := (hfr _ _ hB hD μ).1
-  have := GlobalTheory.PlaceProj.mm_add (GlobalTheory.PlaceProj.mm_add (mm_sub (mm_sub (mm_sub (h μ) k1) k2) (mA μ)) (mB μ)) (mD μ)
+  have := mm_add (mm_add (mm_sub (mm_sub (mm_sub (h μ) k1) k2) (mA μ)) (mB μ)) (mD μ)
   convert this using 1
   simp only [cob, map_sub, map_add (f := _)]
   ring
@@ -282,7 +283,7 @@ theorem sg_all (H : RLaw Y V) (hP : HasProj Y V) {g : Fin 2} {γ : κ → PowerS
   beta_reduce at hK
   set_option synthInstance.maxHeartbeats 100000 in
     rw [e, map_sub, map_sum] at hK
-  have := GlobalTheory.PlaceProj.mm_add (mm_l_mul hK) (mm_sum' Finset.univ _ fun c _ => mm_mul (hbi c) (h c))
+  have := mm_add (mm_l_mul hK) (mm_sum' Finset.univ _ fun c _ => mm_mul (hbi c) (h c))
   convert this using 1
   simp only [PowerSeries.coeff_smul, smul_eq_mul, mul_sub, Finset.mul_sum]
   rw [sub_add, ← Finset.sum_sub_distrib, Finset.sum_eq_zero, sub_zero]
@@ -339,7 +340,7 @@ theorem tangent_mm_of_nonDeg : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [Ne
     push Not at hne
     refine hN γ hγ hne (fun i μ hμ0 hμ1 => ?_) hcob
     rw [additive_low H hγ0 hlow i μ]
-    · exact GlobalTheory.PlaceProj.mm_zero
+    · exact mm_zero
     · rw [weight_one, Finsupp.degree_eq_sum, Fin.sum_univ_two]
       nlinarith
   have hco : ∀ i, PowerSeries.coeff 1 (γ i) = ∑ c, w c * Y.u g c i := by
