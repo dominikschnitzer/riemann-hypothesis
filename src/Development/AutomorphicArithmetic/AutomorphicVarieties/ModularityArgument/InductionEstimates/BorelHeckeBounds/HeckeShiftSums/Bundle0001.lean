@@ -239,7 +239,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.omMeas :
   have h : Quotient.mk'' ⁻¹' {y : RightCosetSpace (Gam K (2 + 2)) | Om T (Quotient.out y : G1 K (2 + 2))} =
       {x : G1 K (2 + 2) | Om T x} := by
     ext x
-    obtain ⟨γ, hγ⟩ := GroundTheory.Automorphic.RightCosetSpace.mk_eq_mk_iff.1 (Quotient.out_eq (RightCosetSpace.mk (Gam K (2 + 2)) x))
+    obtain ⟨γ, hγ⟩ := _root_.GroundTheory.Automorphic.RightCosetSpace.mk_eq_mk_iff.1 (Quotient.out_eq (RightCosetSpace.mk (Gam K (2 + 2)) x))
     change Om T (Quotient.out (RightCosetSpace.mk (Gam K (2 + 2)) x)) ↔ Om T x
     rw [← hγ]
     exact h1 _ γ.2 x
