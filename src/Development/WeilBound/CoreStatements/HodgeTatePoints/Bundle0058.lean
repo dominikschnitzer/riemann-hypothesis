@@ -11,7 +11,8 @@ section
 noncomputable section
 namespace PositivityTheory.HtPt.Cd
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
+open Formalism.L2.Pj hiding smT_zero_ovT
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
@@ -23,7 +24,7 @@ def tanModel {S : Type} [CommRing S] (x : Sp S ⟶ X0) : GlobalTheory.CompanionT
   pt := tv
   tan e := (_root_.GlobalTheory.FrameTangent.isTanAtG_of _ (tv_zero' e)).2
   inj := tv_injective
-  onto v hv := ⟨mkT (_root_.GlobalTheory.FrameTangent.ovT (t := t) ⟨Over.w v, hv⟩) (_root_.GlobalTheory.FrameTangent.smT_zero_ovT _), rfl⟩
+  onto v hv := ⟨mkT (_root_.GlobalTheory.FrameTangent.ovT (t := t) ⟨Over.w v, hv⟩) (smT_zero_ovT _), rfl⟩
   add := tv_add
   smul _ _ := rfl
 
@@ -32,7 +33,7 @@ theorem tanBasis_of_basis {S : Type} [CommRing S] (x : Sp S ⟶ X0) {n : ℕ} (b
   refine ⟨fun k => _root_.GlobalTheory.FrameTangent.isTanAtG_of _ (tv_zero' _), fun w hw => ?_⟩
   have key : ∀ a : Fin n → S, IsCombAtG t x (m := Fintype.card (Fin n))
       (fun i => (tv (b ((Fintype.equivFin (Fin n)).symm i))).left) (fun i => a ((Fintype.equivFin (Fin n)).symm i)) w ↔
-      b.equivFun.symm a = mkT (_root_.GlobalTheory.FrameTangent.ovT hw) (_root_.GlobalTheory.FrameTangent.smT_zero_ovT hw) := fun a => by
+      b.equivFun.symm a = mkT (_root_.GlobalTheory.FrameTangent.ovT hw) (smT_zero_ovT hw) := fun a => by
     rw [comb_iff_sum t x (Fintype.equivFin (Fin n)).symm b a, b.equivFun_symm_apply]
     exact ⟨fun h => tv_injective (Over.OverMorphism.ext h), fun h => by rw [h]; rfl⟩
   exact (existsUnique_congr key).2 (b.equivFun.symm.bijective.existsUnique _)
