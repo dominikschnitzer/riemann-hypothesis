@@ -66,17 +66,18 @@ theorem isUnit_det_colM {a : ℕ} (h : a ≤ n) (T : Matrix (Fin a) (Fin a) (Fv 
   rw [← h1] at hT
   exact isUnit_of_mul_isUnit_right hT
 
-theorem orbAll_of (a : ℕ) (Y : TupV (E := E) v n a) (hE : ExtOrth σ J ψ v Λ a Y) :
-    OrbAll σ J ψ v Λ a Y := by
-  intro hG X hX hXY
-  have h : a ≤ n := hG.2.2.2.2.1
-  have hYL : Y ∈ LamT v Λ a := hG.2.2.2.2.2.1.1
-  obtain ⟨w, -, -, hw⟩ := hG.2.2.2.2.2.2
-  have hT : IsUnit (gramR (Fv F v) σ J Y).det := ⟨⟨_, w, hw, by rw [mul_comm]; exact hw⟩, rfl⟩
-  obtain ⟨ZX, hbX, heX, hgX⟩ := hE h hG X hX hXY
-  obtain ⟨ZY, hbY, heY, hgY⟩ := hE h hG Y hYL rfl
-  have hdX := isUnit_det_colM σ J v h _ hT ZX hgX
-  have hdY := isUnit_det_colM σ J v h _ hT ZY hgY
+theorem orbQ_of {a : ℕ} (h : a ≤ n) (Y : TupV (E := E) v n a)
+    (Q : Set (TupV (E := E) v n a)) (hY : Y ∈ Q)
+    (G : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E))
+    (hE : ∀ X ∈ Q, gramR (Fv F v) σ J X = gramR (Fv F v) σ J Y →
+      ∃ Z : Fin n → Fin n → Fv F v ⊗[F] E, IsOBas v Λ Z ∧
+        (∀ i, Z (eSp h (Sum.inl i)) = X i) ∧ gramR (Fv F v) σ J Z = G ∧
+        IsUnit (colM v Z).det) :
+    ∀ X ∈ Q, gramR (Fv F v) σ J X = gramR (Fv F v) σ J Y →
+      ∃ k ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v, X = k • Y := by
+  intro X hX hXY
+  obtain ⟨ZX, hbX, heX, hgX, hdX⟩ := hE X hX hXY
+  obtain ⟨ZY, hbY, heY, hgY, hdY⟩ := hE Y hY rfl
   set uX := Matrix.nonsingInvUnit (colM v ZX) hdX with huX
   set uY := Matrix.nonsingInvUnit (colM v ZY) hdY with huY
   set k : GL (Fin n) (Fv F v ⊗[F] E) := uX * uY⁻¹ with hk
@@ -127,6 +128,18 @@ theorem orbAll_of (a : ℕ) (Y : TupV (E := E) v n a) (hE : ExtOrth σ J ψ v Λ
   · funext i
     show X i = ((HA.mat (Fv F v) σ J g : GL (Fin n) (Fv F v ⊗[F] E)) : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)) *ᵥ Y i
     rw [hgm, ← heX i, ← heY i, col_eq_colM v ZX, col_eq_colM v ZY, mulVec_mulVec, hkY]
+
+theorem orbAll_of (a : ℕ) (Y : TupV (E := E) v n a) (hE : ExtOrth σ J ψ v Λ a Y) :
+    OrbAll σ J ψ v Λ a Y := by
+  intro hG
+  have h : a ≤ n := hG.2.2.2.2.1
+  have hYL : Y ∈ LamT v Λ a := hG.2.2.2.2.2.1.1
+  obtain ⟨w, -, -, hw⟩ := hG.2.2.2.2.2.2
+  have hT : IsUnit (gramR (Fv F v) σ J Y).det := ⟨⟨_, w, hw, by rw [mul_comm]; exact hw⟩, rfl⟩
+  refine orbQ_of σ J v Λ h Y (LamT v Λ a) hYL (gT v h (gramR (Fv F v) σ J Y)) ?_
+  intro X hX hXY
+  obtain ⟨Z, hbZ, heZ, hgZ⟩ := hE h hG X hX hXY
+  exact ⟨Z, hbZ, heZ, hgZ, isUnit_det_colM σ J v h _ hT Z hgZ⟩
 
 end Glue
 
