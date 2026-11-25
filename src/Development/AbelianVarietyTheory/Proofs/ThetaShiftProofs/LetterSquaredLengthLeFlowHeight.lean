@@ -18,7 +18,8 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.Bundle00
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
-open Formalism.L2.Pj Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
+open Formalism.L2.Pj hiding relab
+open Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
 open scoped LaurentSeries
 
 namespace GlobalTheory.LetterLen
@@ -187,31 +188,31 @@ theorem letter_length_le : Known → ∀ (E : Type) [Field E] [NumberField E] [I
     let ξC : Module.Dual ℤ aC.D₀.X := s.ξ.comp p.xe.toIntLinearEquiv.toLinearMap
     have hpair : ∀ y, pairE (E := E) ξC y = pairE s.ξ (p.xe y) := fun y =>
       Finset.sum_congr rfl fun j _ => congrArg (fun q => _ * ((s.ξ q : ℤ) : E)) (hBC.2.1 _ y)
-    have hv : ∀ y, xiVal (conjEmb (Formalism.L2.PjFree.relab c σ τ)) ξC y = em (φ₀ (p.xe y)) := fun y => by
+    have hv : ∀ y, xiVal (conjEmb (relab c σ τ)) ξC y = em (φ₀ (p.xe y)) := fun y => by
       rw [(pairE_properties E aC.D₀.X ξC).2.2.2.2, hpair]
-      refine (ArchLen.emb_cc (Formalism.L2.PjFree.relab c σ τ) _).symm.trans ?_
+      refine (ArchLen.emb_cc (relab c σ τ) _).symm.trans ?_
       exact RingHom.congr_fun hσ _
-    have ha := anVec_torusLetter hGl E H Dw l Xo c σ O β Y aC χ W _ _ Uw.F Ha ξC t (conjEmb (Formalism.L2.PjFree.relab c σ τ)) eC ht htan b₂
+    have ha := anVec_torusLetter hGl E H Dw l Xo c σ O β Y aC χ W _ _ Uw.F Ha ξC t (conjEmb (relab c σ τ)) eC ht htan b₂
       fun y j hj => (d₂ y j hj).trans (congrArg _ (hv y).symm)
-    have hcc : conjEmb (conjEmb (Formalism.L2.PjFree.relab c σ τ)) = Formalism.L2.PjFree.relab c σ τ := by ext u; simp [conjEmb]
+    have hcc : conjEmb (conjEmb (relab c σ τ)) = relab c σ τ := by ext u; simp [conjEmb]
     rw [hcc] at ha
     have hz' := ((ExpTan.anVec_bijective hGl E H Dw l Xo c σ O β Y aC χ W _ _ Uw.F Ha).1 eC htan).unique hz ha
     have hLz : L z = (2 * Real.pi * Complex.I : ℂ)⁻¹ • fun j => if (Uw.e j).1 = τ then Uw.Pm k x (gm t) j else 0 := by
-      have := map_proj (fun j => Formalism.L2.PjFree.relab c σ (Uw.e j).1) L.toLinearMap _ hspan' (by
+      have := map_proj (fun j => relab c σ (Uw.e j).1) L.toLinearMap _ hspan' (by
         rintro u _ ⟨v, rfl⟩
         funext j
-        have e₁ : (fun j => Formalism.L2.PjFree.relab c σ (Uw.e j).1 (u : E) * Ha.Pw w₁ v j) = Ha.Pw w₁ (u • v) :=
+        have e₁ : (fun j => relab c σ (Uw.e j).1 (u : E) * Ha.Pw w₁ v j) = Ha.Pw w₁ (u • v) :=
           funext fun j => (hlin' u v j).symm
-        rw [e₁, LinearEquiv.coe_coe, ← hP, ← hP, map_smul, hlin]) (Formalism.L2.PjFree.relab c σ τ) (Ha.Pw w₁ t)
+        rw [e₁, LinearEquiv.coe_coe, ← hP, ← hP, map_smul, hlin]) (relab c σ τ) (Ha.Pw w₁ t)
       simp only [(ArchLen.relab_inj c σ).eq_iff, LinearEquiv.coe_coe] at this hz'
       rw [hP, ← this, ← map_smul, hz', hPw t (hy t ht0)]
       congr 1
       funext j
       by_cases h : (Uw.e j).1 = τ <;> simp [h, Pi.smul_apply, smul_eq_mul]
-    obtain ⟨τ', hτ'⟩ : ∃ τ' : (U.X k).Ψ, τ'.1 = Formalism.L2.PjFree.relab c σ τ ∨ conjEmb τ'.1 = Formalism.L2.PjFree.relab c σ τ := by
-      by_cases hm : Formalism.L2.PjFree.relab c σ τ ∈ (U.X k).Ψ
+    obtain ⟨τ', hτ'⟩ : ∃ τ' : (U.X k).Ψ, τ'.1 = relab c σ τ ∨ conjEmb τ'.1 = relab c σ τ := by
+      by_cases hm : relab c σ τ ∈ (U.X k).Ψ
       · exact ⟨⟨_, hm⟩, Or.inl rfl⟩
-      · refine ⟨⟨conjEmb (Formalism.L2.PjFree.relab c σ τ), ?_⟩, Or.inr hcc⟩
+      · refine ⟨⟨conjEmb (relab c σ τ), ?_⟩, Or.inr hcc⟩
         by_contra h'
         exact hm (((U.X k).cmType _).2 h')
     have key := htor (gm t) htξ τ τ' hτ'
