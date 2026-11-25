@@ -393,13 +393,15 @@ end
 
 -- bundled from Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TestPointValueEqConstMulReading
 section
-open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.L2.PjFree
+open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
+open Formalism.L2.Pj hiding rdU
+open Formalism.L2.PjFree
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Frames GlobalTheory.FrameUnif
 open scoped Matrix nonZeroDivisors
 
 namespace GlobalTheory.FrameUnif
 
-theorem test_value_eq_const_mul_reading : Out.SecBaseChangeSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Formalism.L2.PjFree.Unf Xo c σ r), Formalism.L2.PjFree.IsUnf U → ∀ (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (p : TRing c.F) (y : FrPt Xo c p.R) (ψ : p.R →ₐ[c.F] CAt σ), ∃ (k : U.Comp) (x : (U.X k).dom) (u : ℂ), ∀ f ∈ sec Xo c a n, Formalism.L2.PjFree.toC (ψ (f p y)) = u * Formalism.L2.PjFree.rdU U f k x.1 := by
+theorem test_value_eq_const_mul_reading : Out.SecBaseChangeSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Formalism.L2.PjFree.Unf Xo c σ r), Formalism.L2.PjFree.IsUnf U → ∀ (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (p : TRing c.F) (y : FrPt Xo c p.R) (ψ : p.R →ₐ[c.F] CAt σ), ∃ (k : U.Comp) (x : (U.X k).dom) (u : ℂ), ∀ f ∈ sec Xo c a n, Formalism.L2.PjFree.toC (ψ (f p y)) = u * rdU U f k x.1 := by
   intro hSB E _ _ _ H Dw l Xo c σ r U hU a n p y ψ
   obtain ⟨-, -, hWD, -, -, -, hBor⟩ := GlobalTheory.T.framedModuli_algebraicLaws_chart_weight_integrality hSB E H Dw l Xo c
   obtain ⟨z, hz⟩ := GlobalTheory.Frames.FramedBaseChange.exists_frMap hSB E H Dw l Xo c p.R (CAt σ) ψ y
@@ -418,8 +420,8 @@ theorem test_value_eq_const_mul_reading : Out.SecBaseChangeSt → ∀ (E : Type)
     unfold evR evalAt
     rw [dif_pos hT]
     exact hWD f hN _ _ _ _ _ _ _ _ hT.choose_spec.choose_spec.choose_spec hz
-  have h2 : Formalism.L2.PjFree.rdU U f k x.1 = Formalism.L2.PjFree.toC (evR Xo c f (U.un k x)) := by
-    unfold Formalism.L2.PjFree.rdU
+  have h2 : rdU U f k x.1 = Formalism.L2.PjFree.toC (evR Xo c f (U.un k x)) := by
+    unfold rdU
     exact dif_pos x.2
   have h3 := hBor (CAt σ) hred a n f hf t (U.un k x) z ht
   rw [← h1, h2, h3]
